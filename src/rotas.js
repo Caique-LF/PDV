@@ -5,7 +5,6 @@ const { cadastrarUsuario, loginUsuario } = require('./controladores/usuario');
 const validarCorpoRequisicao = require('./intermediarios/validacao');
 
 const schemaUsuario = require('./validacoes/schemaUsuario');
-const schemaLogin = require('./validacoes/schemaLogin');
 
 const rotas = express();
 
