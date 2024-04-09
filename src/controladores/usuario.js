@@ -1,5 +1,7 @@
 const knex = require("../conexoes/conexao");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const senhaJwt = process.env.JWT_HASH
 
 const cadastrarUsuario = async (req, res)=>{
     const {nome, email, senha} = req.body
@@ -28,11 +30,38 @@ const cadastrarUsuario = async (req, res)=>{
 
         return res.status(200).json({menssagem : "Usuário cadastrado com sucesso."})
     } catch (error) {
-        console.log(error.message)
+        return res.status(500).json({menssagem : "Erro interno no servidor"})
+    }
+};
+
+const loginUsuario = async (req, res)=>{
+    const {email, senha} = req.body
+
+    try {
+        const usuario = await knex('usuarios').where('email',email);
+
+        if (usuario.rowCount < 1) {
+            return res.status(401).json({menssagem : "Email ou senha inválidos. Por favor, tente novamente."})
+        };
+
+        const senhaValida = await bcrypt.compare(senha, usuario[0].senha)
+        
+        if(!senhaValida){
+            return res.status(401).json({menssagem : "Email ou senha inválidos. Por favor, tente novamente."})
+        };
+
+        const token = jwt.sign({id: usuario[0].id}, senhaJwt, {expiresIn: '8h'});
+        const {senha:_, ...usuarioLogado} = usuario[0]
+
+        return res.status(200).json({usuario : usuarioLogado, token})
+
+    } catch (error) {
+        console.log(error.message);
         return res.status(500).json({menssagem : "Erro interno no servidor"})
     }
 };
 
 module.exports = {
-    cadastrarUsuario
+    cadastrarUsuario,
+    loginUsuario
 };
