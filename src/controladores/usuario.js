@@ -51,17 +51,24 @@ const loginUsuario = async (req, res)=>{
         };
 
         const token = jwt.sign({id: usuario[0].id}, senhaJwt, {expiresIn: '8h'});
-        const {senha:_, ...usuarioLogado} = usuario[0]
+        const {id, nome} = usuario[0]
 
-        return res.status(200).json({usuario : usuarioLogado, token})
+        return res.status(200).json({usuario : id, nome, token})
 
     } catch (error) {
-        console.log(error.message);
         return res.status(500).json({menssagem : "Erro interno no servidor"})
     }
 };
 
+const detalharPerfilUsuarioLogado = async (req, res) =>{
+    const usuario = req.headers
+
+    res.send('chegou')
+
+}
+
 module.exports = {
     cadastrarUsuario,
-    loginUsuario
+    loginUsuario,
+    detalharPerfilUsuarioLogado
 };
