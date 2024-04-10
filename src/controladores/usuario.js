@@ -61,11 +61,12 @@ const loginUsuario = async (req, res)=>{
 };
 
 const detalharPerfilUsuarioLogado = async (req, res) =>{
-    const usuario = req.headers
 
-    res.send('chegou')
+    const {senha:_ , ...usuario} = req.usuario[0]
 
-}
+    return res.status(200).json(usuario)
+
+};
 
 module.exports = {
     cadastrarUsuario,
