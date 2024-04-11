@@ -68,8 +68,49 @@ const detalharPerfilUsuarioLogado = async (req, res) =>{
 
 };
 
+const editarPerfilUsuario = async (req, res)=>{
+    let {nome, email, senha} = req.body
+
+    const {id} = req.usuario[0]
+
+    try {
+        const usuario = await knex('usuarios').where('id',id);
+
+        if(!usuario){
+            return res.status(404).json({mensagem : "Usuario não encontrado"});
+        };
+
+        senha = await bcrypt.hash(senha, 10);
+
+        if(email !== req.usuario.email){
+            const verificarEmailExistente = await knex('usuarios').where({email}).first();
+
+            if (verificarEmailExistente) {
+                return res.status(403).json({mensagem : "O email já está sendo utilizado."})
+            };
+        }
+
+        const usuarioEditado = await knex('usuarios').where({id}).update({
+            nome, 
+            email,
+            senha
+        });
+
+        if(!usuarioEditado){
+            return res.status(400).json({mensagem : "Usuario não atulalizado"})
+        };
+
+        return res.status(201).json({mensagem : "Usuario atualizado com sucesso"})
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({menssagem : "Erro interno no servidor"})
+    }
+};
+
 module.exports = {
     cadastrarUsuario,
     loginUsuario,
-    detalharPerfilUsuarioLogado
+    detalharPerfilUsuarioLogado,
+    editarPerfilUsuario
 };

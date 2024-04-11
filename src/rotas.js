@@ -1,6 +1,6 @@
 const express = require('express');
 const listarCategorias = require('./controladores/categorias');
-const { cadastrarUsuario, loginUsuario, detalharPerfilUsuarioLogado } = require('./controladores/usuario');
+const { cadastrarUsuario, loginUsuario, detalharPerfilUsuarioLogado, editarPerfilUsuario } = require('./controladores/usuario');
 
 const validarCorpoRequisicao = require('./intermediarios/validacao');
 
@@ -18,4 +18,5 @@ rotas.post('/login', validarCorpoRequisicao(schemaLogin), loginUsuario)
 rotas.use(verificarUsuarioLogado)
 
 rotas.get('/usuario', detalharPerfilUsuarioLogado)
+rotas.put('/usuario', validarCorpoRequisicao(schemaUsuario), editarPerfilUsuario)
 module.exports = rotas;
