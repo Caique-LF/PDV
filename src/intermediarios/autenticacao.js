@@ -25,6 +25,9 @@ const verificarUsuarioLogado = async (req, res, next) =>{
 
         next()
     } catch (error) {
+        if(error instanceof jwt.JsonWebTokenError){
+            return res.status(401).json({mensagem : "Token inválido"})
+        }
         return res.status(500).json({menssagem : "Erro interno no servidor"})
     }
 };
