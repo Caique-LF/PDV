@@ -24,6 +24,37 @@ const cadastrarProdutos = async (req, res) =>{
     }
 };
 
+const editarDadosProd = async (req, res) =>{
+    const {descricao, quantidade_estoque, valor, categoria_id} = req.body
+    const id = req.params.id
+
+    try {
+        const produto = await knex('produtos').where('id', id)
+
+        if(produto.length === 0){
+            return res.status(404).json({mensagem : "O id informado não corresponde a nenhum produto."})
+        };
+
+        const produtoEditado = await knex('produtos').where('id', id).update({
+            descricao,
+            quantidade_estoque,
+            valor,
+            categoria_id 
+        });
+        
+        if(!produtoEditado){
+            return res.status(400).json({mensagem : "Usuario não atulalizado"})
+        };
+
+        return res.status(201).json({mensagem : "Produto editado com sucesso"})
+        
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json({mensagem :"Erro interno no servido" })
+    }
+}
+
 module.exports = {
-    cadastrarProdutos
+    cadastrarProdutos,
+    editarDadosProd
 }

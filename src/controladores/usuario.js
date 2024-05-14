@@ -39,7 +39,7 @@ const loginUsuario = async (req, res)=>{
 
     try {
         const usuario = await knex('usuarios').where('email',email);
-        console.log(usuario);
+        // console.log(usuario);
         
         if (usuario.length === 0) {
             return res.status(401).json({menssagem : "Email ou senha inválidos. Por favor, tente novamente."})
