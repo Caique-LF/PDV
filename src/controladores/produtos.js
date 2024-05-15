@@ -49,12 +49,36 @@ const editarDadosProd = async (req, res) =>{
         return res.status(201).json({mensagem : "Produto editado com sucesso"})
         
     } catch (error) {
-        console.log(error.message)
+        return res.status(500).json({mensagem :"Erro interno no servido" })
+    }
+};
+
+const listarProduto = async (req, res) =>{
+    const {categoria_id} = req.query
+   
+    try {
+        let produtos;
+
+        if (!categoria_id) {
+            produtos = await knex('produtos')
+        } else{    
+            produtos = await knex('produtos').where('categoria_id', categoria_id)
+        }
+        
+        if (!produtos || produtos.length === 0) {
+            return res.status(400).json({mensagem: "Nenhum produto foi encontrado"})
+        }
+
+        return res.status(200).json(produtos)
+        
+       
+    } catch (error) {
         return res.status(500).json({mensagem :"Erro interno no servido" })
     }
 }
 
 module.exports = {
     cadastrarProdutos,
-    editarDadosProd
+    editarDadosProd,
+    listarProduto
 }
