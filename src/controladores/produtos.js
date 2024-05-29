@@ -102,9 +102,29 @@ const detalharProduto = async (req, res) =>{
     }
 }
 
+const deletarProdutoPorId = async (req, res) =>{
+    const {id} = req.params;
+
+    try {
+        const produto = await knex('produtos').where('id', id);
+
+        if(produto.length === 0){
+            return res.status(404).json({mensagem : "O produto não foi encontrado."})
+        }
+
+        const produtoDeletado = await knex('produtos').where('id', id).delete();
+
+        res.status(200).json({mensagem : `${produtoDeletado} poduto(s) deletado(s)`});
+        
+    } catch (error) {
+        return res.status(500).json({mensagem :"Erro interno no servido" })
+    };
+}
+
 module.exports = {
     cadastrarProdutos,
     editarDadosProd,
     listarProduto,
-    detalharProduto
+    detalharProduto,
+    deletarProdutoPorId
 }
