@@ -31,7 +31,6 @@ const cadastrarCliente = async (req, res) =>{
                 estado}
 
             const novoCliente = await knex('clientes').insert(cliente);
-            console.log(novoCliente)
 
             if(novoCliente[0] < 1){
                 return res.status(400).json({menssagem : "O cliente não foi cadastrado."})
@@ -39,7 +38,6 @@ const cadastrarCliente = async (req, res) =>{
     
             return res.status(200).json({menssagem : "Cliente cadastrado com sucesso."})
          } catch (error) {
-            console.log(error.message)
             return res.status(500).json({mensagem : "Erro interno no servidor"});
          }
 
