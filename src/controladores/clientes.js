@@ -2,7 +2,7 @@ const knex = require('../conexoes/conexao');
 
 const cadastrarCliente = async (req, res) =>{
     const {
-        nome,
+         nome,
          email, 
          cpf, 
          cep, 
@@ -41,8 +41,58 @@ const cadastrarCliente = async (req, res) =>{
             return res.status(500).json({mensagem : "Erro interno no servidor"});
          }
 
+};
+
+const editarClientePorID = async (req, res) =>{
+    const{ 
+        nome,
+        email, 
+        cpf, 
+        cep, 
+        rua, 
+        numero, 
+        bairro,
+        cidade, 
+        estado} = req.body;
+
+        const {id} = req.params
+
+    try {
+        const cliente = await knex('clientes').where('id', id);
+
+        if(cliente.length === 0 ){
+            return res.status(404).json({mensagem: "O cliente não foi encontrado."})
+        };
+
+        const emailOuCpfExistente = await knex('clientes').where('email', email).orWhere('cpf', cpf);
+
+        if(emailOuCpfExistente.length > 0 && emailOuCpfExistente[0].id === id){
+            return res.status(400).json({mensagem: "Já existe usuário com o Email ou Cpf fornecido"})
+        };
+        
+        const clienteAtualizado = await knex('clientes').where('id', id).update({
+            nome,
+            email, 
+            cpf, 
+            cep, 
+            rua, 
+            numero, 
+            bairro,
+            cidade, 
+            estado}).returning('*');
+
+        if(clienteAtualizado.length === 0){
+            return res.statuss(401).json({mensagem : "O cliente não foi atualizado."})
+        };
+
+        res.status(204).json()
+
+    } catch (error) {
+        return res.status(500).json({mensagem: "Erro interno no servidor"})
+    }
 }
 
 module.exports = {
-    cadastrarCliente
+    cadastrarCliente,
+    editarClientePorID
 }
