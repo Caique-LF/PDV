@@ -95,18 +95,11 @@ const editarClientePorID = async (req, res) => {
 }
 
 const listarClientes = async (req, res) => {
-    const { id } = req.query
-
     try {
-        if (!id) {
-            const clientes = await knex('clientes').returning('*')
 
-            return res.status(200).json(clientes);
-        }
+        const clientes = await knex('clientes').returning('*')
 
-        const cliente = await knex('clientes').where('id', id);
-
-        return res.status(200).json(cliente);
+        return res.status(200).json(clientes);
 
     } catch (error) {
         return res.status(500).json({ mensagem: "Erro interno no servidor" })
